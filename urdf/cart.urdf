@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<robot name="cart_double_pendulum">
+    <!-- Base Link (World) -->
+    <link name="world"/>
+
+    <!-- Cart Link -->
+    <link name="cart">
+        <visual>
+            <geometry>
+                <box size="0.5 0.3 0.1"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0 0 0.8 1"/>
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.5 0.3 0.1"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="5.0"/>
+            <inertia ixx="0.1" ixy="0" ixz="0" iyy="0.1" iyz="0" izz="0.1"/>
+        </inertial>
+    </link>
+
+    <!-- First Pendulum Rod (Massless) -->
+    <link name="pendulum1_rod">
+        <visual>
+            <geometry>
+                <cylinder length="0.5" radius="0.01"/>
+            </geometry>
+            <origin xyz="0 0 0.25" rpy="0 0 0"/>
+            <material name="gray">
+                <color rgba="0.5 0.5 0.5 1"/>
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder length="0.5" radius="0.01"/>
+            </geometry>
+            <origin xyz="0 0 0.25" rpy="0 0 0"/>
+        </collision>
+        <inertial>
+            <mass value="0.001"/>  <!-- Nearly massless -->
+            <origin xyz="0 0 0.25" rpy="0 0 0"/>
+            <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+        </inertial>
+    </link>
+
+    <!-- First Pendulum Sphere -->
+    <link name="pendulum1_sphere">
+        <visual>
+            <geometry>
+                <sphere radius="0.05"/>
+            </geometry>
+            <material name="red">
+                <color rgba="0.8 0 0 1"/>
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <sphere radius="0.05"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="5"/>
+            <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+        </inertial>
+    </link>
+
+    <!-- Second Pendulum Rod (Massless) -->
+    <link name="pendulum2_rod">
+        <visual>
+            <geometry>
+                <cylinder length="0.5" radius="0.01"/>
+            </geometry>
+            <origin xyz="0 0 0.25" rpy="0 0 0"/>
+            <material name="gray">
+                <color rgba="0.5 0.5 0.5 1"/>
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder length="0.5" radius="0.01"/>
+            </geometry>
+            <origin xyz="0 0 0.25" rpy="0 0 0"/>
+        </collision>
+        <inertial>
+            <mass value="0.001"/>  <!-- Nearly massless -->
+            <origin xyz="0 0 0.25" rpy="0 0 0"/>
+            <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+        </inertial>
+    </link>
+
+    <!-- Second Pendulum Sphere -->
+    <link name="pendulum2_sphere">
+        <visual>
+            <geometry>
+                <sphere radius="0.05"/>
+            </geometry>
+            <material name="green">
+                <color rgba="0 0.8 0 1"/>
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <sphere radius="0.05"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="5"/>
+            <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+        </inertial>
+    </link>
+
+    <!-- Prismatic Joint for Cart Movement -->
+    <joint name="cart_joint" type="prismatic">
+        <parent link="world"/>
+        <child link="cart"/>
+        <axis xyz="1 0 0"/>
+        <origin xyz="0 0 0.05" rpy="0 0 0"/>
+        <limit lower="-1.0" upper="1.0" effort="1000.0" velocity="1000.0"/>
+    </joint>
+
+    <!-- First Rod Joint -->
+    <joint name="pendulum1_joint" type="revolute">
+        <parent link="cart"/>
+        <child link="pendulum1_rod"/>
+        <axis xyz="0 1 0"/>
+        <origin xyz="0 0 0.05" rpy="0 0 0"/>
+        <limit lower="-3000.14159" upper="3000.14159" effort="1000.0" velocity="1000.0"/>
+    </joint>
+
+    <!-- First Sphere Joint (Fixed to end of first rod) -->
+    <joint name="sphere1_joint" type="fixed">
+        <parent link="pendulum1_rod"/>
+        <child link="pendulum1_sphere"/>
+        <origin xyz="0 0 0.5" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Second Rod Joint -->
+    <joint name="pendulum2_joint" type="revolute">
+        <parent link="pendulum1_sphere"/>
+        <child link="pendulum2_rod"/>
+        <axis xyz="0 1 0"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <limit lower="-3000.14159" upper="3000.14159" effort="1000.0" velocity="1000.0"/>
+    </joint>
+
+    <!-- Second Sphere Joint (Fixed to end of second rod) -->
+    <joint name="sphere2_joint" type="fixed">
+        <parent link="pendulum2_rod"/>
+        <child link="pendulum2_sphere"/>
+        <origin xyz="0 0 0.5" rpy="0 0 0"/>
+    </joint>
+</robot>
